@@ -16,6 +16,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
+    "@typescript-eslint/unbound-method": "off",
     "import-helpers/order-imports": [
       "warn",
       {
