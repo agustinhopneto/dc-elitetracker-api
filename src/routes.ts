@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
 import packageJson from '../package.json';
+import { FocusTimeController } from './controllers/focus-time.controller';
 import { HabitsController } from './controllers/habits.controller';
 
 export const routes = Router();
 
 const habitsController = new HabitsController();
+const focusTimeController = new FocusTimeController();
 
 routes.get('/', (request, response) => {
   const { name, description, version } = packageJson;
@@ -21,8 +23,4 @@ routes.delete('/habits/:id', habitsController.remove);
 
 routes.patch('/habits/:id/toggle', habitsController.toggle);
 
-/**
- * M (Model) -> Responsável por se comunicar com o banco;
- * V (View) -> Mostrar isso para o usuário (React);
- * C (Controller) -> Controla a requisição, chama a Model, define RN's e faz o retorno pro Usuário;
- */
+routes.post('/focus-time', focusTimeController.store);
