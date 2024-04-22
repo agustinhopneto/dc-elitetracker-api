@@ -13,6 +13,8 @@ routes.get('/', (request, response) => {
   return response.status(200).json({ name, description, version });
 });
 
+routes.get('/habits', habitsController.index);
+
 routes.post('/habits', habitsController.store);
 
 /**

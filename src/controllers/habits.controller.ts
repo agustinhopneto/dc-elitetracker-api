@@ -33,4 +33,10 @@ export class HabitsController {
 
     return response.status(201).json(newHabit);
   };
+
+  index = async (request: Request, response: Response) => {
+    const habits = await habitModel.find().sort({ name: 1 });
+
+    return response.status(200).json(habits);
+  };
 }
