@@ -148,10 +148,8 @@ export class HabitsController {
       return response.status(422).json({ message: errors });
     }
 
-    const dateFrom = dayjs(validated.data.date).startOf('month').toDate();
-    const dateTo = dayjs(validated.data.date).endOf('month').toDate();
-
-    console.log({ dateFrom, dateTo });
+    const dateFrom = dayjs(validated.data.date).startOf('month');
+    const dateTo = dayjs(validated.data.date).endOf('month');
 
     const [habitMetrics] = await habitModel
       .aggregate()
@@ -168,16 +166,20 @@ export class HabitsController {
             cond: {
               $and: [
                 {
-                  $gte: ['$$completedDate', dateFrom],
+                  $gte: ['$$completedDate', dateFrom.toDate()],
                 },
                 {
-                  $lte: ['$$completedDate', dateTo],
+                  $lte: ['$$completedDate', dateTo.toDate()],
                 },
               ],
             },
           },
         },
       });
+
+    if (!habitMetrics) {
+      return response.status(404).json({ message: 'Habit not found.' });
+    }
 
     return response.status(200).json(habitMetrics);
   };
