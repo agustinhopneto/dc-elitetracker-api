@@ -39,4 +39,24 @@ export class HabitsController {
 
     return response.status(200).json(habits);
   };
+
+  remove = async (request: Request, response: Response) => {
+    const schema = z.object({
+      id: z.string(),
+    });
+
+    const habit = schema.safeParse(request.params);
+
+    if (!habit.success) {
+      const errors = buildValidationErrorMessage(habit.error.issues);
+
+      return response.status(422).json({ message: errors });
+    }
+
+    await habitModel.deleteOne({
+      _id: habit.data.id,
+    });
+
+    return response.status(204).send();
+  };
 }

@@ -17,6 +17,8 @@ routes.get('/habits', habitsController.index);
 
 routes.post('/habits', habitsController.store);
 
+routes.delete('/habits/:id', habitsController.remove);
+
 /**
  * M (Model) -> Responsável por se comunicar com o banco;
  * V (View) -> Mostrar isso para o usuário (React);
