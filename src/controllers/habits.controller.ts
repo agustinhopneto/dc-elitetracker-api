@@ -53,6 +53,14 @@ export class HabitsController {
       return response.status(422).json({ message: errors });
     }
 
+    const findHabit = await habitModel.findOne({
+      _id: habit.data.id,
+    });
+
+    if (!findHabit) {
+      return response.status(404).json({ message: 'Habit not found.' });
+    }
+
     await habitModel.deleteOne({
       _id: habit.data.id,
     });
