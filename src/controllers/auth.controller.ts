@@ -1,8 +1,8 @@
 import axios, { isAxiosError } from 'axios';
 import { type Request, type Response } from 'express';
 
-const clientId = 'Ov23liEDgasXeWB4r0xw';
-const clientSecret = '0fca7923f9a404712bacdba06e33eb5caaff0617';
+const { GITHUB_CLIENT_ID: clientId, GITHUB_CLIENT_SECRET: clientSecret } =
+  process.env;
 
 export class AuthController {
   auth = async (request: Request, response: Response) => {
