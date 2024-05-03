@@ -38,4 +38,53 @@ export class FocusTimeController {
 
     return response.status(201).json(createdFocusTime);
   };
+
+  metricsByMonth = async (request: Request, response: Response) => {
+    const schema = z.object({
+      date: z.coerce.date(),
+    });
+
+    const validated = schema.safeParse(request.query);
+
+    if (!validated.success) {
+      const errors = buildValidationErrorMessage(validated.error.issues);
+
+      return response.status(422).json({ message: errors });
+    }
+
+    const startDate = dayjs(validated.data.date).startOf('month');
+    const endDate = dayjs(validated.data.date).endOf('month');
+
+    const focusTimesMetrics = await focusTimeModel
+      .aggregate()
+      .match({
+        timeFrom: {
+          $gte: startDate.toDate(),
+          $lte: endDate.toDate(),
+        },
+      })
+
+      .project({
+        year: {
+          $year: '$timeFrom',
+        },
+        month: {
+          $month: '$timeFrom',
+        },
+        day: {
+          $dayOfMonth: '$timeFrom',
+        },
+      })
+      .group({
+        _id: ['$year', '$month', '$day'],
+        count: {
+          $sum: 1,
+        },
+      })
+      .sort({
+        _id: 1,
+      });
+
+    return response.status(200).json(focusTimesMetrics);
+  };
 }

@@ -26,3 +26,5 @@ routes.delete('/habits/:id', habitsController.remove);
 routes.patch('/habits/:id/toggle', habitsController.toggle);
 
 routes.post('/focus-time', focusTimeController.store);
+
+routes.get('/focus-time/metrics/month', focusTimeController.metricsByMonth);
