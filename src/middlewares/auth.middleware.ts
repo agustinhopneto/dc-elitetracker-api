@@ -1,6 +1,8 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import jwt from 'jsonwebtoken';
 
+import { type User } from '../@types/user.type';
+
 export function authMiddleware(
   request: Request,
   response: Response,
@@ -14,13 +16,17 @@ export function authMiddleware(
 
   const [, token] = authToken.split(' ');
 
-  jwt.verify(token, String(process.env.JWT_SECRET), (err, decoded) => {
-    if (err) {
-      return response.status(401).json({ message: 'Token is invalid.' });
-    }
+  try {
+    jwt.verify(token, String(process.env.JWT_SECRET), (err, decoded) => {
+      if (err) {
+        throw new Error();
+      }
 
-    request.userId = decoded?.id;
-  });
+      request.user = decoded as User;
+    });
+  } catch {
+    return response.status(401).json({ message: 'Token is invalid.' });
+  }
 
   next();
 }

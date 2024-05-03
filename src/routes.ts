@@ -22,7 +22,9 @@ routes.get('/auth', authController.auth);
 
 routes.get('/auth/callback', authController.authCallback);
 
-routes.get('/habits', authMiddleware, habitsController.index);
+routes.use(authMiddleware);
+
+routes.get('/habits', habitsController.index);
 
 routes.get('/habits/:id/metrics', habitsController.metrics);
 
