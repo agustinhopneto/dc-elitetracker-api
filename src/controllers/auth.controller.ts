@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { type Request, type Response } from 'express';
 
 const clientId = 'Ov23liEDgasXeWB4r0xw';
@@ -12,30 +12,38 @@ export class AuthController {
   };
 
   authCallback = async (request: Request, response: Response) => {
-    const { code } = request.query;
+    try {
+      const { code } = request.query;
 
-    const accessTokenResult = await axios.post(
-      'https://github.com/login/oauth/access_token',
-      {
-        client_id: clientId,
-        client_secret: clientSecret,
-        code,
-      },
-      {
-        headers: {
-          Accept: 'application/json',
+      const accessTokenResult = await axios.post(
+        'https://github.com/login/oauth/access_token',
+        {
+          client_id: clientId,
+          client_secret: clientSecret,
+          code,
         },
-      },
-    );
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        },
+      );
 
-    const userDataResult = await axios.get('https://api.github.com/user', {
-      headers: {
-        Authorization: `Bearer ${accessTokenResult.data.access_token}`,
-      },
-    });
+      const userDataResult = await axios.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `Bearer ${accessTokenResult.data.access_token}`,
+        },
+      });
 
-    const { node_id: id, avatar_url: avatarUrl, name } = userDataResult.data;
+      const { node_id: id, avatar_url: avatarUrl, name } = userDataResult.data;
 
-    return response.status(200).json({ id, avatarUrl, name });
+      return response.status(200).json({ id, avatarUrl, name });
+    } catch (err) {
+      if (isAxiosError(err)) {
+        return response.status(400).json(err.response?.data);
+      }
+
+      return response.status(500).json({ message: 'Something went wrong.' });
+    }
   };
 }
