@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🏆 Elite Tracker — API
+# 🏆 Elite Tracker: API
 
-**Backend do Elite Tracker: acompanhe hábitos diários e sessões de foco (Pomodoro) com login via GitHub.**
+**The Elite Tracker backend: track daily habits and focus sessions (Pomodoro) with GitHub sign-in.**
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
@@ -11,44 +11,44 @@
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Zod](https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
 
-[Sobre](#-sobre) •
-[Funcionalidades](#-funcionalidades) •
-[Arquitetura](#-arquitetura) •
-[Como rodar](#-como-rodar) •
+[About](#-about) •
+[Features](#-features) •
+[Architecture](#-architecture) •
+[Getting started](#-getting-started) •
 [Endpoints](#-endpoints) •
-[Modelos](#-modelos) •
+[Models](#-models) •
 [Frontend](#-frontend)
 
 </div>
 
 ---
 
-## 📖 Sobre
+## 📖 About
 
-A **Elite Tracker API** é uma API REST construída com **Express + TypeScript** e **MongoDB** que dá suporte ao app Elite Tracker. Ela permite que cada usuário:
+**Elite Tracker API** is a REST API built with **Express + TypeScript** and **MongoDB** that powers the Elite Tracker app. It lets each user:
 
-- cadastre **hábitos diários** e marque/desmarque sua conclusão a cada dia;
-- registre **sessões de foco** (ciclos de tempo concentrado);
-- consulte **métricas mensais** de hábitos e de foco para alimentar calendários e estatísticas.
+- create **daily habits** and mark or unmark them as completed each day;
+- record **focus sessions** (cycles of focused time);
+- query **monthly metrics** for habits and focus sessions to feed calendars and statistics.
 
-A autenticação é feita via **OAuth do GitHub**: a API troca o `code` do GitHub por um token de acesso, busca os dados do usuário e emite um **JWT** próprio, usado nas rotas protegidas.
+Authentication uses **GitHub OAuth**: the API exchanges the GitHub `code` for an access token, fetches the user’s data and issues its own **JWT**, which is then used on the protected routes.
 
-## ✨ Funcionalidades
+## ✨ Features
 
-| | Recurso | Descrição |
+| | Feature | Description |
 |---|---|---|
-| 🔐 | **Login com GitHub** | Fluxo OAuth completo + emissão de JWT |
-| ✅ | **Hábitos** | Criar, listar, remover e alternar conclusão do dia |
-| 📊 | **Métricas de hábitos** | Dias concluídos de um hábito dentro de um mês |
-| ⏱️ | **Tempo de foco** | Registrar sessões com início e fim |
-| 📅 | **Métricas de foco** | Quantidade de ciclos por dia no mês (via aggregation pipeline) |
-| 🛡️ | **Validação** | Todas as entradas validadas com Zod (retorno `422` em caso de erro) |
+| 🔐 | **GitHub sign-in** | Full OAuth flow + JWT issuing |
+| ✅ | **Habits** | Create, list, delete and toggle today’s completion |
+| 📊 | **Habit metrics** | Days a habit was completed within a month |
+| ⏱️ | **Focus time** | Record sessions with start and end times |
+| 📅 | **Focus metrics** | Number of cycles per day in a month (via an aggregation pipeline) |
+| 🛡️ | **Validation** | Every input validated with Zod (`422` on error) |
 
-## 🧱 Arquitetura
+## 🧱 Architecture
 
 ```mermaid
 flowchart LR
-    FE[Frontend React] -->|HTTP + Bearer JWT| R[Express Router]
+    FE[React frontend] -->|HTTP + Bearer JWT| R[Express Router]
     R --> AUTH[AuthController]
     R --> MW{authMiddleware}
     MW --> H[HabitsController]
@@ -60,90 +60,90 @@ flowchart LR
 
 ```
 src/
-├── @types/          # Tipagens (User, extensão do Request do Express)
-├── controllers/     # auth, habits e focus-time
-├── database/        # Conexão com o MongoDB (mongoose)
-├── middlewares/     # Validação do JWT
-├── models/          # Schemas do Mongoose (Habit, FocusTime)
-├── utils/           # Helpers (mensagens de validação)
-├── routes.ts        # Definição das rotas
-└── server.ts        # Bootstrap da aplicação (porta 4000)
+├── @types/          # Typings (User, Express Request extension)
+├── controllers/     # auth, habits and focus-time
+├── database/        # MongoDB connection (mongoose)
+├── middlewares/     # JWT validation
+├── models/          # Mongoose schemas (Habit, FocusTime)
+├── utils/           # Helpers (validation messages)
+├── routes.ts        # Route definitions
+└── server.ts        # App bootstrap (port 4000)
 ```
 
-## 🚀 Como rodar
+## 🚀 Getting started
 
-### Pré-requisitos
+### Prerequisites
 
 - [Node.js](https://nodejs.org/) 18+
-- Uma instância do [MongoDB](https://www.mongodb.com/) (local, Docker ou Atlas)
-- Um [OAuth App no GitHub](https://github.com/settings/developers) com a *callback URL* apontando para a rota `/autenticacao` do frontend
+- A [MongoDB](https://www.mongodb.com/) instance (local, Docker or Atlas)
+- A [GitHub OAuth App](https://github.com/settings/developers) whose *callback URL* points to the frontend’s `/autenticacao` route
 
-### Passo a passo
+### Step by step
 
 ```bash
-# 1. Clone o repositório
+# 1. Clone the repository
 git clone https://github.com/agustinhopneto/dc-elitetracker-api.git
 cd dc-elitetracker-api
 
-# 2. Instale as dependências
+# 2. Install the dependencies
 npm install
 
-# 3. Configure as variáveis de ambiente
+# 3. Set up the environment variables
 cp .env.example .env
 
-# 4. Suba o servidor em modo desenvolvimento
+# 4. Start the server in development mode
 npm run dev
 ```
 
-O servidor sobe em **http://localhost:4000** 🚀
+The server runs at **http://localhost:4000** 🚀
 
-### Variáveis de ambiente
+### Environment variables
 
-| Variável | Descrição |
+| Variable | Description |
 |---|---|
-| `MONGO_URL` | String de conexão do MongoDB |
-| `GITHUB_CLIENT_ID` | Client ID do OAuth App do GitHub |
-| `GITHUB_CLIENT_SECRET` | Client Secret do OAuth App do GitHub |
-| `JWT_SECRET` | Segredo usado para assinar os tokens JWT |
-| `JWT_EXPIRES_IN` | Tempo de expiração do token (ex.: `1d`) |
+| `MONGO_URL` | MongoDB connection string |
+| `GITHUB_CLIENT_ID` | GitHub OAuth App client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth App client secret |
+| `JWT_SECRET` | Secret used to sign the JWTs |
+| `JWT_EXPIRES_IN` | Token expiration time (e.g. `1d`) |
 
-> 💡 **Dica:** para subir um MongoDB rapidamente com Docker:
+> 💡 **Tip:** spin up MongoDB quickly with Docker:
 > ```bash
 > docker run -d --name mongo -p 27017:27017 mongo
 > ```
 
 ## 📡 Endpoints
 
-> 🔒 = rota protegida. Envie o header `Authorization: Bearer <token>`.
+> 🔒 = protected route. Send the `Authorization: Bearer <token>` header.
 
-### Geral e autenticação
+### General and authentication
 
-| Método | Rota | Descrição |
+| Method | Route | Description |
 |---|---|---|
-| `GET` | `/` | Nome, descrição e versão da API |
-| `GET` | `/auth` | Retorna a `redirectUrl` para o login no GitHub |
-| `GET` | `/auth/callback?code=` | Troca o `code` do GitHub por `{ id, name, avatarUrl, token }` |
+| `GET` | `/` | API name, description and version |
+| `GET` | `/auth` | Returns the `redirectUrl` for GitHub sign-in |
+| `GET` | `/auth/callback?code=` | Exchanges the GitHub `code` for `{ id, name, avatarUrl, token }` |
 
-### Hábitos 🔒
+### Habits 🔒
 
-| Método | Rota | Descrição |
+| Method | Route | Description |
 |---|---|---|
-| `GET` | `/habits` | Lista os hábitos do usuário (ordenados por nome) |
-| `POST` | `/habits` | Cria um hábito. Body: `{ "name": "Ler 10 páginas" }` |
-| `DELETE` | `/habits/:id` | Remove um hábito |
-| `PATCH` | `/habits/:id/toggle` | Marca/desmarca o hábito como concluído **hoje** |
-| `GET` | `/habits/:id/metrics?date=` | Datas concluídas do hábito no mês de `date` |
+| `GET` | `/habits` | Lists the user’s habits (sorted by name) |
+| `POST` | `/habits` | Creates a habit. Body: `{ "name": "Read 10 pages" }` |
+| `DELETE` | `/habits/:id` | Deletes a habit |
+| `PATCH` | `/habits/:id/toggle` | Marks or unmarks the habit as completed **today** |
+| `GET` | `/habits/:id/metrics?date=` | Completed dates of the habit in the month of `date` |
 
-### Tempo de foco 🔒
+### Focus time 🔒
 
-| Método | Rota | Descrição |
+| Method | Route | Description |
 |---|---|---|
-| `POST` | `/focus-time` | Registra uma sessão. Body: `{ "timeFrom": "ISO", "timeTo": "ISO" }` |
-| `GET` | `/focus-time?date=` | Sessões do dia de `date` |
-| `GET` | `/focus-time/metrics?date=` | Quantidade de ciclos por dia no mês de `date` |
+| `POST` | `/focus-time` | Records a session. Body: `{ "timeFrom": "ISO", "timeTo": "ISO" }` |
+| `GET` | `/focus-time?date=` | Sessions on the day of `date` |
+| `GET` | `/focus-time/metrics?date=` | Number of cycles per day in the month of `date` |
 
 <details>
-<summary><b>📦 Exemplos de resposta</b></summary>
+<summary><b>📦 Response examples</b></summary>
 
 **`GET /auth/callback`**
 ```json
@@ -159,7 +159,7 @@ O servidor sobe em **http://localhost:4000** 🚀
 ```json
 {
   "_id": "6650f1...",
-  "name": "Ler 10 páginas",
+  "name": "Read 10 pages",
   "completedDates": ["2024-05-02T03:00:00.000Z", "2024-05-03T03:00:00.000Z"]
 }
 ```
@@ -174,17 +174,17 @@ O servidor sobe em **http://localhost:4000** 🚀
 
 </details>
 
-### Códigos de status
+### Status codes
 
-| Código | Quando |
+| Code | When |
 |---|---|
-| `200` / `201` / `204` | Sucesso |
-| `400` | Regra de negócio violada (ex.: hábito duplicado, `timeTo` antes de `timeFrom`) |
-| `401` | Token ausente ou inválido |
-| `404` | Recurso não encontrado |
-| `422` | Erro de validação dos dados enviados |
+| `200` / `201` / `204` | Success |
+| `400` | Business rule violated (e.g. duplicated habit, `timeTo` before `timeFrom`) |
+| `401` | Missing or invalid token |
+| `404` | Resource not found |
+| `422` | Invalid request data |
 
-## 🗂️ Modelos
+## 🗂️ Models
 
 ```mermaid
 erDiagram
@@ -206,28 +206,28 @@ erDiagram
     }
 ```
 
-O `userId` é o `node_id` do usuário no GitHub, extraído do JWT.
+`userId` is the user’s GitHub `node_id`, taken from the JWT.
 
 ## 🖥️ Frontend
 
-O frontend que consome esta API está em
+The frontend that consumes this API lives at
 👉 **[dc-elitetracker-front](https://github.com/agustinhopneto/dc-elitetracker-front)**
 
-## 🛠️ Tecnologias
+## 🛠️ Tech stack
 
-- **[Express](https://expressjs.com/)**: framework HTTP
-- **[Mongoose](https://mongoosejs.com/)**: ODM para MongoDB
-- **[Zod](https://zod.dev/)**: validação de dados
-- **[jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)**: emissão e verificação de JWT
-- **[Axios](https://axios-http.com/)**: integração com a API do GitHub
-- **[Day.js](https://day.js.org/)**: manipulação de datas
-- **[tsx](https://github.com/privatenumber/tsx)**: execução de TypeScript com hot reload
-- **ESLint + Prettier**: padronização de código
+- **[Express](https://expressjs.com/)**: HTTP framework
+- **[Mongoose](https://mongoosejs.com/)**: MongoDB ODM
+- **[Zod](https://zod.dev/)**: data validation
+- **[jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)**: JWT signing and verification
+- **[Axios](https://axios-http.com/)**: GitHub API integration
+- **[Day.js](https://day.js.org/)**: date handling
+- **[tsx](https://github.com/privatenumber/tsx)**: runs TypeScript with hot reload
+- **ESLint + Prettier**: code style
 
 ---
 
 <div align="center">
 
-Feito com 💙 por **[Agustinho Neto](https://github.com/agustinhopneto)**
+Made with 💙 by **[Agustinho Neto](https://github.com/agustinhopneto)**
 
 </div>
